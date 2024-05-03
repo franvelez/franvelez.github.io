@@ -1,0 +1,93 @@
+<script>
+    cargarDatos();
+
+        function cargarDatos(){
+            fetch("http://localhost:3000/posts")
+            .then(response => response.text())
+            .then(data=>{
+                let respuesta = JSON.parse(data);
+                mostrarDatos(respuesta);
+            });
+
+        }
+        
+
+        function mostrarDatos(respuesta){
+            let cuerpo = document.getElementById("datos_body");
+            let registros = "";
+            for(let i=0; i<respuesta.length; i++){
+                registros += `<tr>
+                <td>${respuesta[i].id}</td>
+                <td>${respuesta[i].title}</td>
+                <td>${respuesta[i].views}</td>
+<td>
+    <button type='button' class='btn btn-danger' onclick='eliminar(${i})'>Eliminar</button>
+</td>
+</tr>  `;
+}
+cuerpo.innerHTML = registros;
+
+}
+
+function eliminar(posicion){
+let codigo = document.getElementById("datos_body").rows[posicion].cells[0].innerHTML;
+
+let opciones = {
+method : "DELETE"
+}
+
+fetch("http://localhost:3000/posts/"+codigo, opciones)
+.then(response => response.text())
+.then(data=>{
+let respuesta = JSON.parse(data);
+console.log(respuesta);
+cargarDatos();
+});
+
+
+}
+function editar(posicion){
+let codigo = document.getElementById("datos_body").rows[posicion].cells[0].innerHTML;
+let nombre = document.getElementById("datos_body").rows[posicion].cells[1].innerHTML;
+
+        }
+
+        function cancelar(){
+            document.getElementById("txtCodigo").value = "";
+            document.getElementById("txtTitulo").value = "";
+            document.getElementById("txtVistas").value = "";
+        }
+
+        function guardar(){
+            let codigo, titulo, vistas;
+
+            codigo = document.getElementById("txtCodigo").value;
+            titulo = document.getElementById("txtTitulo").value;
+            vistas = document.getElementById("txtVistas").value;
+            alert("Codigo : "+ codigo +"\n" + 
+                  "titulo : "+ titulo +"\n" +
+                  "Vistas : "+ vistas 
+            );
+    
+            let opciones = {
+                method : "POST",
+                body : JSON.stringify({
+                    "id" : codigo,
+                    "title": titulo,
+                    "views": vistas
+                })
+            }
+
+            fetch("http://localhost:3000/posts", opciones)
+            .then(response => response.text())
+            .then(data=>{
+                let respuesta = JSON.parse(data);
+                console.log(respuesta);
+                cargarDatos();
+            });
+
+        }
+
+</script>
+
+</html>

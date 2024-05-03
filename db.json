@@ -1,0 +1,10 @@
+{
+  "posts": [
+    {
+      "id": "001",
+      "nombre": "frank",
+      "apellido": "veliz ",
+      "documento": "70900689"
+    }
+  ]
+}

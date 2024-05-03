@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+    integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="row mt-4">
+      <div class="col-md-4">
+        <form>
+          <div class="form-group">
+            <label for="txtCodigo">Codigo</label>
+            <input type="text" class="form-control" id="txtCodigo">
+          </div>
+          <div class="form-group">
+            <label for="txtNombre">Nombre</label>
+            <input type="text" class="form-control" id="txtNombre">
+          </div>
+          <div class="form-group">
+            <label for="txtApellido">Apellido</label>
+            <input type="text" class="form-control" id="txtApellido">
+          </div>
+          <div class="form-group">
+            <label for="txtDocumento">Documento</label>
+            <input type="text" class="form-control" id="txtDocumento">
+          </div>
+
+          <button type="button" class="btn btn-primary" onclick="guardar();">Guardar</button>
+          <button type="button" class="btn btn-danger" onclick="cancelar();">Cancelar</button>
+        </form>
+      </div>
+
+      <div class="col-md-8">
+
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Codigo</th>
+              <th scope="col">Nombres</th>
+              <th scope="col">Apellidos</th>
+              <th scope="col">Documento</th>
+            </tr>
+          </thead>
+          <tbody id="tbody_datos">
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script type="text/javascript">
+
+
+
+  cargarDatos();
+
+  function cargarDatos() {
+    fetch("http://localhost:3000/posts")
+      .then(response => response.text())
+      .then(data => {
+        let respuesta = JSON.parse(data);
+        mostrarData(respuesta);
+
+      });
+
+  }
+
+ function mostrarData(datos) {
+    console.log(datos)
+    let body = document.getElementById("tbody_datos");
+    let registros = "";
+   
+            for(let i=0; i<datos.length; i++){
+                registros += `<tr>
+                <td>${datos[i].id}</td>
+                <td>${datos[i].nombre}</td>
+                <td>${datos[i].apellido}</td>
+                <td>${datos[i].documento}</td>
+               
+                </tr>  `;
+          
+
+    }
+    body.innerHTML=registros;
+    
+  }
+    function guardar() {
+      let id,nombre,apellido,documento;
+      
+
+      id = document.getElementById("txtCodigo").value;
+      nombre = document.getElementById("txtNombre").value;
+      apellido = document.getElementById("txtApellido").value;
+      documento = document.getElementById("txtDocumento").value;
+
+
+      let opciones = {
+
+
+        method: "POST",
+        body: JSON.stringify({
+          "id": id,
+          "nombre": nombre,
+          "apellido": apellido,
+          "documento": documento,
+        })
+      }
+
+      fetch("http://localhost:3000/posts", opciones)
+        .then(response => response.text())
+        .then(data => {
+          let respuesta = JSON.parse(data);
+         
+          cargarDatos();
+        });
+
+    }
+
+    function cancelar() {
+      id=document.getElementById("txtCodigo").value ="";
+      nombre = document.getElementById("txtNombre").value = "";
+      apellido = document.getElementById("txtApellido").value = "";
+      documento = document.getElementById("txtDocumento").value = "";
+
+    }
+
+</script>
+
+</html>
